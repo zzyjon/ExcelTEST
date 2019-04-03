@@ -137,10 +137,11 @@ function check() {
 			<button class="btn btn-secondary btn-lg btn-block" type="button" id="excelUp" onclick="check()">엑셀 등록</button>
 		</form>
 		<div>
-			<button class="btn btn-primary" onclick="location.href='/jexelDown'">Excel Download for jexcel</button>
-			<button class="btn btn-primary" onclick="location.href='/jxlsDown'">Excel Download for jxls</button>
-			<button class="btn btn-warning" onclick="location.href='/poiDown'">Excel Download for poi</button>
-			<button class="btn btn-warning" onclick="location.href='/MaxPoiDown'">Excel Download for MAXpoi</button>
+			<button class="btn btn-primary" onclick="location.href='/jexelDown'">jxls 엑셀 다운로드</button>
+			<button class="btn btn-primary" onclick="location.href='/jxlsDown'">jxls 엑셀 다운로드</button>
+			<button class="btn btn-primary" onclick="location.href='/jxlsDownload'">jxls 엑셀 다운로드</button>
+			<button class="btn btn-warning" onclick="location.href='/poiDown'">poi 엑셀 다운로드</button>
+			<button class="btn btn-warning" onclick="location.href='/MaxPoiDown'">poi 대용량 엑셀 다운로드</button>
 		</div>
 	</div>
 	<div id="div_ajax_load_image" style="display: none;"><img src="/img/loading.gif"></div>

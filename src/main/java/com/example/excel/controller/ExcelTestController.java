@@ -1,5 +1,9 @@
 package com.example.excel.controller;
 
+import java.io.BufferedInputStream;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -22,6 +26,8 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.jxls.common.Context;
+import org.jxls.util.JxlsHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -69,13 +75,39 @@ public class ExcelTestController {
 		Map<String, Object> jxlsmap = new HashMap<>();
 		Map<String, Integer> map = new HashMap<>();
 		
-		map.put("startRow", startRow);
-		map.put("viewRow", viewRow);
+		//map.put("startRow", startRow);
+		//map.put("viewRow", viewRow);
 		
-		jxlsmap.put("listview", excelTestService.dataList(map));
+		jxlsmap.put("listview", "helloworld!");
 		
 		MakeExcel makeExcel = new MakeExcel();
-		makeExcel.download(request, response, jxlsmap, makeExcel.get_Filename("jexcel_down"), "jxlsTemplate.xlsx");
+		makeExcel.download(request, response, jxlsmap, makeExcel.get_Filename("jexcel_down"), "Book1.xlsx");
+	}
+	
+	@RequestMapping(value = "/jxlsDownload")
+	public void jxlsTest(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		Map<String, Integer> map = new HashMap<String, Integer>();
+		map.put("startRow", 0);
+		map.put("viewRow", 5000);
+		
+		List<ExcelTestVO> list = excelTestService.dataList(map);
+		
+		String tempPath = request.getSession().getServletContext().getRealPath("/WEB-INF/template/");
+		FileInputStream fileInputStream = new FileInputStream(tempPath + "Book1.xlsx");
+		BufferedInputStream bufferedInputStream = new  BufferedInputStream(fileInputStream);
+		
+		try (InputStream is = bufferedInputStream) {
+			response.setHeader("Content-Disposition", "attachment; filename=\"" + "jxlsTestDown" + ".xlsx\"");
+			try (OutputStream os = response.getOutputStream()) {
+				Context context = new Context();
+				context.putVar("listview", list);
+				//context.putVar("hellobody", "hellobody");
+				JxlsHelper.getInstance().processTemplate(is, os, context);
+			}
+		}
+		
+		
+		
 	}
 	
 	@RequestMapping(value = "/poiDown")
