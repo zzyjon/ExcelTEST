@@ -81,32 +81,37 @@ public class ExcelTestController {
 		jxlsmap.put("listview", "helloworld!");
 		
 		MakeExcel makeExcel = new MakeExcel();
-		makeExcel.download(request, response, jxlsmap, makeExcel.get_Filename("jexcel_down"), "Book1.xlsx");
+		makeExcel.download(request, response, jxlsmap, makeExcel.get_Filename("jexcel_down"), "Book1.xls");
 	}
 	
 	@RequestMapping(value = "/jxlsDownload")
 	public void jxlsTest(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		
+		long start = System.currentTimeMillis(); //시작하는 시점 계산
+		
 		Map<String, Integer> map = new HashMap<String, Integer>();
 		map.put("startRow", 0);
-		map.put("viewRow", 5000);
+		map.put("viewRow", 65530);
 		
 		List<ExcelTestVO> list = excelTestService.dataList(map);
 		
 		String tempPath = request.getSession().getServletContext().getRealPath("/WEB-INF/template/");
-		FileInputStream fileInputStream = new FileInputStream(tempPath + "Book1.xlsx");
+		FileInputStream fileInputStream = new FileInputStream(tempPath + "Book3.xls");
 		BufferedInputStream bufferedInputStream = new  BufferedInputStream(fileInputStream);
 		
 		try (InputStream is = bufferedInputStream) {
-			response.setHeader("Content-Disposition", "attachment; filename=\"" + "jxlsTestDown" + ".xlsx\"");
+			response.setHeader("Content-Disposition", "attachment; filename=\"" + "jxlsTestDown" + ".xls");
 			try (OutputStream os = response.getOutputStream()) {
 				Context context = new Context();
-				context.putVar("listview", list);
-				//context.putVar("hellobody", "hellobody");
+				context.putVar("employees", list);
 				JxlsHelper.getInstance().processTemplate(is, os, context);
+			}catch(Exception ex) {
+				ex.printStackTrace();
 			}
 		}
 		
-		
+		long end = System.currentTimeMillis(); //프로그램이 끝나는 시점 계산
+	    System.out.println( "jxls download 실행 시간 : " + ( end - start )/1000.0 +"초"); //실행 시간 계산 및 출력
 		
 	}
 	
@@ -117,8 +122,8 @@ public class ExcelTestController {
 		
 		Map<String, Integer> map = new HashMap<>();
 		map.put("startRow", 1);
-		map.put("viewRow", excelTestService.dataCount());
-		//map.put("viewRow", 65535);
+		//map.put("viewRow", excelTestService.dataCount());
+		map.put("viewRow", 65535);
 	    // 데이터 목록조회
 	    List<ExcelTestVO> list = excelTestService.dataList(map);
 
@@ -230,9 +235,10 @@ public class ExcelTestController {
 		long start = System.currentTimeMillis(); //시작하는 시점 계산
 		
 		Map<String, Integer> map = new HashMap<>();
-		map.put("startRow", 1);
+		map.put("startRow", 0);
 		map.put("viewRow", excelTestService.dataCount());
 		//map.put("viewRow", 65535);
+		
 	    // 데이터 목록조회
 	    List<ExcelTestVO> list = excelTestService.dataList(map);
 
@@ -240,13 +246,12 @@ public class ExcelTestController {
 	    //Workbook wb = new HSSFWorkbook(); // xls 형식
 	    XSSFWorkbook wb = new XSSFWorkbook(); // xlsx 형식
 	    Sheet sheet = wb.createSheet("DATA LIST"); // 시트 이름
-	    int LastRowNo = sheet.getLastRowNum();
 	    Row row = null;
 	    Cell cell = null;
 	    int rowNo = 0;
 	    
 	    // 헤더 생성
-	    row = sheet.createRow(rowNo++);
+	    row = sheet.createRow(rowNo);
 	    cell = row.createCell(0);
 	    cell.setCellValue("번호");
 	    cell = row.createCell(1);
@@ -256,21 +261,15 @@ public class ExcelTestController {
 	    cell = row.createCell(3);
 	    cell.setCellValue("등록일시");
 	    
-	    
 	    SXSSFWorkbook sxssfWorkbook = new SXSSFWorkbook(wb, 1000);
-	    sheet = sxssfWorkbook.getSheetAt(LastRowNo);
+	    sheet = sxssfWorkbook.getSheetAt(cell.getRowIndex());
 	    
 	    ExceladdRowData exceladdRowData = new ExceladdRowData();
-	    exceladdRowData.addRowDataTest(list, sheet, LastRowNo);
-	    
+	    exceladdRowData.addRowDataTest(list, sheet, rowNo);
 	    exceladdRowData.writeResponse("excelMax.xlsx", response, sxssfWorkbook);
-
-	    // 엑셀 출력
-	    wb.write(response.getOutputStream());
-	    wb.close();
 	    
 	    long end = System.currentTimeMillis(); //프로그램이 끝나는 시점 계산
-	    System.out.println( "poi download 실행 시간 : " + ( end - start )/1000.0 +"초"); //실행 시간 계산 및 출력
+	    System.out.println( "poi 대용량  다운로드 실행 시간 : " + ( end - start )/1000.0 +"초"); //실행 시간 계산 및 출력
 
 	}
 

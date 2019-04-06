@@ -47,7 +47,7 @@ public class MakeExcel {
             XLSTransformer transformer = new XLSTransformer();
             //Workbook resultWorkbook = transformer.transformXLS(is, beans);
             Workbook resultWorkbook = transformer.transformXLS(is, beans);
-            response.setHeader("Content-Disposition", "attachment; filename=\"" + filename + ".xlsx\"");
+            response.setHeader("Content-Disposition", "attachment; filename=\"" + filename + ".xls");
             OutputStream os = response.getOutputStream();
             resultWorkbook.write(os);
             
