@@ -96,7 +96,7 @@ public class ExcelTestController {
 		List<ExcelTestVO> list = excelTestService.dataList(map);
 		
 		String tempPath = request.getSession().getServletContext().getRealPath("/WEB-INF/template/");
-		FileInputStream fileInputStream = new FileInputStream(tempPath + "Book3.xls");
+		FileInputStream fileInputStream = new FileInputStream(tempPath + "test3.xls");
 		BufferedInputStream bufferedInputStream = new  BufferedInputStream(fileInputStream);
 		
 		try (InputStream is = bufferedInputStream) {
@@ -104,6 +104,7 @@ public class ExcelTestController {
 			try (OutputStream os = response.getOutputStream()) {
 				Context context = new Context();
 				context.putVar("employees", list);
+				context.putVar("test", 1234);
 				JxlsHelper.getInstance().processTemplate(is, os, context);
 			}catch(Exception ex) {
 				ex.printStackTrace();
