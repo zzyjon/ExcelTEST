@@ -67,22 +67,6 @@ public class ExcelTestController {
 		return "testDataList";
 	}
 	
-	@RequestMapping(value = "/jexelDown")
-	public void excelDown(HttpServletRequest request, HttpServletResponse response, Model model, @RequestParam(value="currPage", defaultValue="1") int currPage) throws Exception {
-		int viewRow = 30;
-		int startRow = (currPage - 1) * viewRow;
-		
-		Map<String, Object> jxlsmap = new HashMap<>();
-		Map<String, Integer> map = new HashMap<>();
-		
-		//map.put("startRow", startRow);
-		//map.put("viewRow", viewRow);
-		
-		jxlsmap.put("listview", "helloworld!");
-		
-		MakeExcel makeExcel = new MakeExcel();
-		makeExcel.download(request, response, jxlsmap, makeExcel.get_Filename("jexcel_down"), "Book1.xls");
-	}
 	
 	@RequestMapping(value = "/jxlsDownload")
 	public void jxlsTest(HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -91,20 +75,23 @@ public class ExcelTestController {
 		
 		Map<String, Integer> map = new HashMap<String, Integer>();
 		map.put("startRow", 0);
-		map.put("viewRow", 65530);
+		map.put("viewRow", 300000);
 		
 		List<ExcelTestVO> list = excelTestService.dataList(map);
 		
 		String tempPath = request.getSession().getServletContext().getRealPath("/WEB-INF/template/");
-		FileInputStream fileInputStream = new FileInputStream(tempPath + "test3.xls");
+		FileInputStream fileInputStream = new FileInputStream(tempPath + "Book2.xlsx");
 		BufferedInputStream bufferedInputStream = new  BufferedInputStream(fileInputStream);
 		
 		try (InputStream is = bufferedInputStream) {
-			response.setHeader("Content-Disposition", "attachment; filename=\"" + "jxlsTestDown" + ".xls");
+			//엑셀파일로 다운로드위한 response 객체 세팅
+			response.setHeader("Content-Disposition", "attachment; filename=\"" + "jxlsTestDown" + ".xlsx");
 			try (OutputStream os = response.getOutputStream()) {
+				//컨텍스트 객체 생성 및 세팅
+			    //context 속성에 컨텍스트명과 엑셀에 쓰일 데이터를 Key & Value로 세팅
+			    //여기서 contextName ("excelDataList")은 엑셀 템플릿파일에서 items="컨텍스트명"과 반드시 일치해야함
 				Context context = new Context();
-				context.putVar("employees", list);
-				context.putVar("test", 1234);
+				context.putVar("list", list);
 				JxlsHelper.getInstance().processTemplate(is, os, context);
 			}catch(Exception ex) {
 				ex.printStackTrace();
@@ -124,12 +111,12 @@ public class ExcelTestController {
 		Map<String, Integer> map = new HashMap<>();
 		map.put("startRow", 1);
 		//map.put("viewRow", excelTestService.dataCount());
-		map.put("viewRow", 65535);
+		map.put("viewRow", 300000);
 	    // 데이터 목록조회
 	    List<ExcelTestVO> list = excelTestService.dataList(map);
 
 	    // 워크북 생성
-	    //Workbook wb = new HSSFWorkbook(); // xls 형식
+	    //HSSFWorkbook wb = new HSSFWorkbook(); // xls 형식
 	    XSSFWorkbook wb = new XSSFWorkbook(); // xlsx 형식
 	    Sheet sheet = wb.createSheet("DATA LIST"); // 시트 이름
 	    Row row = null;
@@ -193,7 +180,7 @@ public class ExcelTestController {
 
 	    // 컨텐츠 타입과 파일명 지정
 	    response.setContentType("ms-vnd/excel");
-	    response.setHeader("Content-Disposition", "attachment;filename=test_poi.xlsx");
+	    response.setHeader("Content-Disposition", "attachment;filename=test_poi.xls");
 
 	    // 엑셀 출력
 	    wb.write(response.getOutputStream());
@@ -204,31 +191,6 @@ public class ExcelTestController {
 
 	}
 	
-	@RequestMapping("/jxlsDown")
-	public View reportExcelDownload2(final HttpServletResponse response,
-			@RequestParam(value = "reqData", required = false, defaultValue = "") final String reqData, final Model model) throws Exception {
-
-		try {
-			
-			SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd HH:mm:ss");
-			
-			Map<String, Integer> map = new HashMap<String, Integer>();
-			map.put("startRow", 1);
-			map.put("viewRow", 5000);
-			
-			List<ExcelTestVO> allDataList = excelTestService.dataList(map);
-			
-			model.addAttribute("list", allDataList);
-			model.addAttribute("count", allDataList.size());
-			model.addAttribute("DownloadDate", sdf.format(new Date()));
-	
-
-		} catch (Exception e) {
-		e.printStackTrace();
-		}
-		return new ExcelView();
-	}
-	
 	
 	@RequestMapping(value = "/MaxPoiDown")
 	public void MaxExcelDown(HttpServletResponse response) throws Exception {
@@ -237,8 +199,8 @@ public class ExcelTestController {
 		
 		Map<String, Integer> map = new HashMap<>();
 		map.put("startRow", 0);
-		map.put("viewRow", excelTestService.dataCount());
-		//map.put("viewRow", 65535);
+		//map.put("viewRow", excelTestService.dataCount());
+		map.put("viewRow", 10000);
 		
 	    // 데이터 목록조회
 	    List<ExcelTestVO> list = excelTestService.dataList(map);
@@ -246,6 +208,7 @@ public class ExcelTestController {
 	    // 워크북 생성
 	    //Workbook wb = new HSSFWorkbook(); // xls 형식
 	    XSSFWorkbook wb = new XSSFWorkbook(); // xlsx 형식
+	    
 	    Sheet sheet = wb.createSheet("DATA LIST"); // 시트 이름
 	    Row row = null;
 	    Cell cell = null;
