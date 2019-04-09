@@ -6,8 +6,8 @@ import org.springframework.stereotype.Repository;
 
 import com.example.excel.vo.ExcelTestVO;
 
-@Repository("com.example.excel.mapper.AdminAccountsMngMapper")
-public interface AdminAccountsMngMapper {
+@Repository("com.example.excel.mapper.ExcelUploadTestMapper")
+public interface ExcelUploadTestMapper {
 
 	void insertExcelTest(List<ExcelTestVO> list);
 

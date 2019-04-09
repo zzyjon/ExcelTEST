@@ -17,14 +17,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
-import com.example.excel.mapper.AdminAccountsMngMapper;
+import com.example.excel.mapper.ExcelUploadTestMapper;
 import com.example.excel.vo.ExcelTestVO;
 
 @Service
-public class AdminAccountsMngService {
+public class ExcelUploadTestService {
 
 	@Autowired
-	AdminAccountsMngMapper adminAccountsMngMapper;
+	ExcelUploadTestMapper uploadTestMapper;
 
 	public List<ExcelTestVO> xlsExcelReader(MultipartHttpServletRequest req) {
 		// 반환할 객체를 생성
@@ -110,20 +110,16 @@ public class AdminAccountsMngService {
 		}
 
 		// 디비에 insert
-		adminAccountsMngMapper.insertExcelTest(list);
+		uploadTestMapper.insertExcelTest(list);
 		return list;
 	}
 
 	
 	
 	/**
-	 * <PRE>
 	* 1. MethodName	: xlsxExcelReader
 	* 2. ClassName	: AdminAccountsMngService
 	* 3. Commnet	: XLLX파일을 분석하여 List<ExcelTestVO>객체로 반환
-	* 4. 작성자	: dukking
-	* 5. 작성일	: 2016. 8. 11. 오후 2:45:48
-	 * </PRE>
 	 *
 	 * @return List<ExcelTestVO>
 	 * @param req
@@ -213,7 +209,7 @@ public class AdminAccountsMngService {
 		}
 
 		// 디비에 insert
-		adminAccountsMngMapper.insertExcelTest(list);
+		uploadTestMapper.insertExcelTest(list);
 		return list;
 
 	}

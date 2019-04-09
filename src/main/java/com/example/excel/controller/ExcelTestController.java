@@ -33,12 +33,15 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.View;
 
 import com.example.excel.common.ExcelView;
 import com.example.excel.common.ExceladdRowData;
 import com.example.excel.common.MakeExcel;
 import com.example.excel.service.ExcelTestService;
+import com.example.excel.service.ExcelUploadTestService;
 import com.example.excel.vo.ExcelTestVO;
 
 @Controller
@@ -46,6 +49,9 @@ public class ExcelTestController {
 
 	@Autowired
 	ExcelTestService excelTestService;
+	
+	@Autowired
+	ExcelUploadTestService excelUploadTestService;
 	
 	@RequestMapping("/")
 	public String getDataList(Model model, @RequestParam(value="currPage", defaultValue="1") int currPage) throws Exception {
@@ -236,5 +242,22 @@ public class ExcelTestController {
 	    System.out.println( "poi 대용량  다운로드 실행 시간 : " + ( end - start )/1000.0 +"초"); //실행 시간 계산 및 출력
 
 	}
+	
+	
+	@RequestMapping(value = "/ExcelUpload")
+	public ModelAndView excelUpload(MultipartHttpServletRequest req) {
+		ModelAndView mav = new ModelAndView("testDataList");
+		List<ExcelTestVO> list = new ArrayList<>();
+		// 엑셀 파일이 xls일때와 xlsx일때 서비스 각각 다른 처리
+		String excelType = req.getParameter("excelType");
+		if (excelType.equals("xlsx")) {
+			list = excelUploadTestService.xlsxExcelReader(req);
+		} else if (excelType.equals("xls")) {
+			list = excelUploadTestService.xlsExcelReader(req);
+		}
+		mav.addObject("list", list);
+		return mav;
+	}
+	
 
 }

@@ -67,7 +67,7 @@ function check() {
 	var fileFormat = file.split(".");
 	var fileType = fileFormat[1];
 	if (confirm("업로드 하시겠습니까?")) {
-		$("#excelUpForm").attr("action", "/accountsMngs/compExcelUpload");
+		$("#excelUpForm").attr("action", "/ExcelUpload");
 		var options = {
 			success : function(data) {
 				alert("업로드 완료");
