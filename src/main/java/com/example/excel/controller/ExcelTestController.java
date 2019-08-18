@@ -47,6 +47,13 @@ public class ExcelTestController {
 	@Autowired
 	ExcelTestService excelTestService;
 	
+	
+	@RequestMapping("/test")
+	public String goTestPage() {
+		
+		return "TestPage";
+	}
+	
 	@RequestMapping("/")
 	public String getDataList(Model model, @RequestParam(value="currPage", defaultValue="1") int currPage) throws Exception {
 		
