@@ -1,0 +1,17 @@
+{"properties": [
+  {
+    "name": "multipart.maxFileSize",
+    "type": "java.lang.String",
+    "description": "A description for 'multipart.maxFileSize'"
+  },
+  {
+    "name": "multipart.maxRequestSize",
+    "type": "java.lang.String",
+    "description": "A description for 'multipart.maxRequestSize'"
+  },
+  {
+    "name": "multipart.maxRequestSize",
+    "type": "java.lang.String",
+    "description": "A description for 'multipart.maxRequestSize'"
+  }
+]}

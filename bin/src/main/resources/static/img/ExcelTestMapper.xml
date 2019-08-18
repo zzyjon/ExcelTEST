@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.excel.mapper.ExcelTestMapper" >
+
+    <select id="dataCount" resultType="int">
+    	select count(*) from mytest
+    </select>
+    <select id="dataList" parameterType="map" resultType="com.example.excel.vo.ExcelTestVO">
+    	select * from mytest order by mytest_id desc limit #{startRow}, #{viewRow}
+    </select>
+     <select id="AllDataList"  resultType="com.example.excel.vo.ExcelTestVO">
+    	select * from mytest order by mytest_id asc 
+    </select>
+    
+</mapper>
